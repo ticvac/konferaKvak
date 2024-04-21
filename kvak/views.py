@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.template.response import TemplateResponse
 
 
 def index(request):
@@ -11,4 +12,10 @@ def init(request):
     return HttpResponseRedirect(reverse("play", kwargs={"code":id}))
 
 def play(request, code):
-    return HttpResponse(str(code))
+    args = {}
+    args["tiles"] = []
+    for i in range(8):
+        args["tiles"].append([])
+        for j in range(8):
+            args["tiles"][-1].append("T")
+    return TemplateResponse(request, "kvak/game.html", args) 
