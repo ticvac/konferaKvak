@@ -3,17 +3,21 @@ from django.contrib.auth.models import User
 from kvak.custom_enums import TileType, BackgroundType
 
 
+class Player(models.Model):
+    ...
+
 class Žába(models.Model):
     isQueen = models.BooleanField(default=False)
-    tileId = models.IntegerField()
+    tile = models.ForeignKey(Tile, related_name = "zaby", null=False)
+    player = models.ForeignKey(Player, related_name="zaby", null=False)
 
-class Player(models.Model):
-    zaby = models.ManyToManyField(Žába)
+class Board(models.Model):
+    ...
 
 class Game(models.Model):
     firstOnMove = models.BooleanField(default=True)
     moveCount = models.IntegerField(default=0)
-    boardId = models.IntegerField()
+    board = models.OneToOneField(Board, on_delete=models.CASCADE)
 
     player1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player1_reverse")
     player2 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player2_reverse")
@@ -25,15 +29,7 @@ class Tile(models.Model):
     type = models.IntegerField(choices=[(e.value, e.name) for e in TileType])
     backgroundType = models.IntegerField(choices=[(e.value, e.name) for e in BackgroundType])
     number = models.IntegerField(null=False)
-
-
-
-
-
-class Board(models.Model):
-    tiles = models.ManyToManyField(Tile)
-
-
+    board = models.ForeignKey(Board, related_name="tiles", null)
 
 class StouplNaSamce(models.Model):
     playerId = models.IntegerField()

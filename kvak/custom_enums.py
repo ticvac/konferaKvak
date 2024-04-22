@@ -12,6 +12,7 @@ class TileType(Enum):
     RUZOVY_SAMEC = 63
     ZELENY_SAMEC = 64
     ZLUTY_SAMEC = 65
+    KLADA = 7
 
 class BackgroundType(Enum):
     BEZ_STIKY = 1
