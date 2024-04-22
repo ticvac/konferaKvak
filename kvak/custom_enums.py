@@ -1,6 +1,6 @@
-import enums
+from enum import Enum
 
-class TileType(enums):
+class TileType(Enum):
     LEKNIN = 1
     KOMAR = 2
     BAHNO = 3
@@ -13,7 +13,7 @@ class TileType(enums):
     ZELENY_SAMEC = 64
     ZLUTY_SAMEC = 65
 
-class BackgroundType(enums):
+class BackgroundType(Enum):
     BEZ_STIKY = 1
     STIKA_DOLE = 2
     STIKA_NAHORE = 3
