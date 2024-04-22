@@ -1,7 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from kvak.custom_enums import TileType, BackgroundType
-from models import Tile
+
+class Board(models.Model):
+    ...
+
+class Tile(models.Model):
+    isFliped = models.BooleanField(default=False)
+    type = models.IntegerField(choices=[(e.value, e.name) for e in TileType])
+    backgroundType = models.IntegerField(choices=[(e.value, e.name) for e in BackgroundType])
+    number = models.IntegerField(null=False)
+    board = models.ForeignKey(Board, related_name="tiles", null=False, on_delete=models.CASCADE)
 
 
 class Player(models.Model):
@@ -9,11 +18,8 @@ class Player(models.Model):
 
 class Žába(models.Model):
     isQueen = models.BooleanField(default=False)
-    tile = models.ForeignKey(Tile, related_name = "zaby", null=False)
-    player = models.ForeignKey(Player, related_name="zaby", null=False)
-
-class Board(models.Model):
-    ...
+    tile = models.ForeignKey(Tile, related_name = "zaby", null=False, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, related_name="zaby", null=False, on_delete=models.CASCADE)
 
 class Game(models.Model):
     firstOnMove = models.BooleanField(default=True)
@@ -25,12 +31,6 @@ class Game(models.Model):
 
     isOver = models.BooleanField(default=False)
 
-class Tile(models.Model):
-    isFliped = models.BooleanField(default=False)
-    type = models.IntegerField(choices=[(e.value, e.name) for e in TileType])
-    backgroundType = models.IntegerField(choices=[(e.value, e.name) for e in BackgroundType])
-    number = models.IntegerField(null=False)
-    board = models.ForeignKey(Board, related_name="tiles", null=False)
 
 class StouplNaSamce(models.Model):
     playerId = models.IntegerField()

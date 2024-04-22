@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template.response import TemplateResponse
-from models import Game, Board, Tile, Player, Žába
-from custom_enums import TileType, BackgroundType
+from .models import Game, Board, Tile, Player, Žába
+from .custom_enums import TileType, BackgroundType
 
 import random
 
