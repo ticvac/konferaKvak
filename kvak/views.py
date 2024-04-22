@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template.response import TemplateResponse
+from django.views.generic import TemplateView
 
 
 def index(request):
@@ -11,26 +12,33 @@ def init(request):
     id = 3232321
     return HttpResponseRedirect(reverse("game", kwargs={"code":id}))
 
-def game(request, code):
-    args = {}
-    args["tiles"] = []
-    args["game_id"] = code
-    args["premoved_frog"] = 233
-    for i in range(8):
-        args["tiles"].append([])
-        for j in range(8):
-            args["tiles"][-1].append({
-                "text" : "T",
-                "zaby": [
-                    {
-                        "id" : i * 8 + j
-                    },
-                    # {
-                    #     "id" : i * 8 + j + 63
-                    # }
-                ]
-            })
-    return TemplateResponse(request, "kvak/game.html", args) 
+class GameView(TemplateView):
+    template_name = "kvak/game.html"
+
+    def get_context_data(self, **kwargs):
+        args = super().get_context_data(**kwargs)
+        code = self.kwargs.get("code")
+
+        args = {}
+        args["tiles"] = []
+        args["game_id"] = code
+        args["premoved_frog"] = 233
+        for i in range(8):
+            args["tiles"].append([])
+            for j in range(8):
+                args["tiles"][-1].append({
+                    "text" : "T",
+                    "zaby": [
+                        {
+                            "id" : i * 8 + j
+                        },
+                        # {
+                        #     "id" : i * 8 + j + 63
+                        # }
+                    ]
+                })
+
+        return args
 
 def play_move(request, code):
     tile1_id = -1
