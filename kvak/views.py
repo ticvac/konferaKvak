@@ -22,7 +22,7 @@ class GameView(TemplateView):
         args = {}
         args["tiles"] = []
         args["game_id"] = code
-        args["premoved_frog"] = 233
+        # args["premoved_frog"] = 9
         for i in range(8):
             args["tiles"].append([])
             for j in range(8):
@@ -37,7 +37,6 @@ class GameView(TemplateView):
                         # }
                     ]
                 })
-
         return args
 
 def play_move(request, code):
