@@ -13,10 +13,6 @@ body {
     border-radius: 0.5em;
 }
 
-.informations:hover {
-    background-color: red;
-}
-
 .board {
     background-color: #803d3b;
     height: 95dvh;

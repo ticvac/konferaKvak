@@ -15,6 +15,7 @@ def game(request, code):
     args = {}
     args["tiles"] = []
     args["game_id"] = code
+    args["premoved_frog"] = 233
     for i in range(8):
         args["tiles"].append([])
         for j in range(8):

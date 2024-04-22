@@ -45,4 +45,12 @@
         }
 
     }
+
+    window.onload = init_from_args()
+    function init_from_args() {
+        if ("{{ premoved_frog }}") {
+            ele = document.getElementById("tile_id_1")
+            ele.value = "{{premoved_frog}}"
+        }
+    }
 </script>
