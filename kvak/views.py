@@ -9,9 +9,9 @@ def index(request):
 def init(request):
     # init game from database
     id = 3232321
-    return HttpResponseRedirect(reverse("play", kwargs={"code":id}))
+    return HttpResponseRedirect(reverse("game", kwargs={"code":id}))
 
-def play(request, code):
+def game(request, code):
     args = {}
     args["tiles"] = []
     for i in range(8):
@@ -19,3 +19,8 @@ def play(request, code):
         for j in range(8):
             args["tiles"][-1].append("T")
     return TemplateResponse(request, "kvak/game.html", args) 
+
+def play_move(reques):
+    tile1 = 0
+    tile2 = 2
+    is_queen = False
