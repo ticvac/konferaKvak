@@ -4,17 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=2">   
+    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.1">   
 </head>
 <body>
-    <div class="board">
+    <div class="informations">
+    </div>
+    <form action="/kvak/game/{{ game_id }}/play_move" class="board" method="post" id="board_form">
+        {% csrf_token %}
+        <input type="hidden" name="tile_id_1" id="tile_id_1">
+        <input type="hidden" name="tile_id_2" id="tile_id_2">
+        
         {% for tile_row in tiles %}
         <div class="row">
             {% for tile in tile_row %}
-                <div class="tile">{{ tile }}</div>
+                <div class="tile">
+                    {% for zaba in tile.zaby %}
+                        <div class="zaba" onclick='tile_clicked("{{zaba.id}}")'>
+                            {{ zaba.id }}
+                        </div> 
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
         {% endfor %}
-    </div>
+    </form>
 </body>
 </html>
+
+<script>
+    function tile_clicked(tile_id) {
+        console.log(tile_id)
+        ele = document.getElementById("tile_id_1")
+        ele2 = document.getElementById("tile_id_2")
+        if (ele.value == "") {
+            ele.value = tile_id
+        } else if(ele2.value == "") {
+            ele2.value = tile_id
+            form = document.getElementById("board_form")
+            form.submit()
+        }
+
+    }
+</script>
