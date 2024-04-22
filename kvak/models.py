@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from kvak.custom_enums import TileType, BackgroundType
+from models import Tile
 
 
 class Player(models.Model):
@@ -29,7 +30,7 @@ class Tile(models.Model):
     type = models.IntegerField(choices=[(e.value, e.name) for e in TileType])
     backgroundType = models.IntegerField(choices=[(e.value, e.name) for e in BackgroundType])
     number = models.IntegerField(null=False)
-    board = models.ForeignKey(Board, related_name="tiles", null)
+    board = models.ForeignKey(Board, related_name="tiles", null=False)
 
 class StouplNaSamce(models.Model):
     playerId = models.IntegerField()

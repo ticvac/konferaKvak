@@ -6,5 +6,4 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("game/init", view=views.init, name="init"),
     path("game/<int:code>", view=views.game, name="game")
-
 ]

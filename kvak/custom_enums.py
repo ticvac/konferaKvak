@@ -6,7 +6,7 @@ class TileType(Enum):
     BAHNO = 3
     STIKA = 4
     RAKOS = 5
-    MORDY_SAMEC = 60
+    MODRY_SAMEC = 60
     FIALOVY_SAMEC = 61
     CERVENY_SAMEC = 62
     RUZOVY_SAMEC = 63
