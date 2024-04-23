@@ -83,7 +83,7 @@ body {
 }
 
 .pink {
-    background-color: rgba(255, 192, 203, 0.468);
+    background-color: rgba(255, 68, 99, 0.468);
 }
 
 .real_zaba {
@@ -100,8 +100,23 @@ body {
     position: absolute;
     overflow: hidden;
     z-index: 0;
+    width: 4em;
+    aspect-ratio: 1/1;
 }
 
 .tile_image img {
+    width: 100%;
+    border-radius: 0.2em;
+}
+
+.real_zaba img {
+    max-width: 2em;
+}
+
+.supreme_zaba {
+    /* position: absolute; */
+    overflow: hidden;
+    z-index: 0;
     width: 4em;
+    aspect-ratio: 1/1;
 }

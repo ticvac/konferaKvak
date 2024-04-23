@@ -260,7 +260,7 @@ class GameView(TemplateView):
                         tiles_data[-1][-1]["zaby"].append(
                             {
                                 "id": zaba.id,
-                                "image": 1 if zaba.isQueen else 0,
+                                "image": "Frog_queen.png" if zaba.isQueen else "frog.png",
                                 "color": "blue" if zaba in list(game.player1.zaby.all()) else "pink"
                             }
                         )

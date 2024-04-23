@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.4">   
+    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.6">   
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,14 +31,13 @@
                 <div class="tile zaba" onclick='tile_clicked("{{tile.number}}")' id="zaba_{{tile.number}}">
                     <div class="tile_image">
                         <img src="{% static 'kvak/images/' %}{{ tile.image }}" alt="">
-
                         <!-- {{ tile.image }} -->
                     </div>
                     
 
                     {% for zaba in tile.zaby %}
-                        <div class="{{zaba.color}} real_zaba" id="" onclick="zaba_pressed('{{ zaba.id }}')">
-                            {{ zaba.image }}
+                        <div class="supreme_zaba {{zaba.color}} real_zaba" id="" onclick="zaba_pressed('{{ zaba.id }}')">
+                            <img src="{% static 'kvak/images/' %}{{ zaba.image }}" alt="">
                         </div> 
                     {% endfor %}
                 </div>
@@ -90,6 +89,25 @@
             ele.value = id
         } else if (ele2.value == -1) {
             ele2.value = id
+        }
+    }
+
+    window.onload = fuck_css()
+    function fuck_css() {
+        console.log("FUCK")
+        // get width
+        tile = document.getElementsByClassName("tile")[0]
+        h = tile.offsetWidth;
+        elements = document.getElementsByClassName("tile_image")
+        console.log(h)
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = h - 10 + "px"
+        }
+
+        elements = document.getElementsByClassName("supreme_zaba")
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = (h/2) - 10 + "px"
+            // elements[i].style.height = (elements[i].offsetHeight - 10) + "px"
         }
     }
 </script>
