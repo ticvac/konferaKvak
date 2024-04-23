@@ -189,31 +189,37 @@ def init(request):
         tile = game.board.tiles.get(number=0),
         player = player1
     )
+    zaba.save()
     zaba = Žába.objects.create(
         isQueen = False,
         tile = game.board.tiles.get(number=1),
         player= player1
     )
+    zaba.save()
     zaba = Žába.objects.create(
         isQueen = False,
         tile = game.board.tiles.get(number=8),
         player= player1
     )
+    zaba.save()
     zaba = Žába.objects.create(
         isQueen = True,
         tile = game.board.tiles.get(number=63),
         player = player2
     )
+    zaba.save()
     zaba = Žába.objects.create(
         isQueen = False,
         tile = game.board.tiles.get(number=62),
         player= player2
     )
+    zaba.save()
     zaba = Žába.objects.create(
         isQueen = False,
         tile = game.board.tiles.get(number=55),
         player= player2
     )
+    zaba.save()
 
     game.save()
     id = game.id
@@ -230,20 +236,52 @@ class GameView(TemplateView):
         args["tiles"] = []
         args["game_id"] = code
         # args["premoved_frog"] = 9
+        game = Game.objects.get(id=code)
+        tiles = game.board.tiles.all().order_by("number")
+        zaby1 = list(game.player1.zaby.all())
+        zaby2 = list(game.player2.zaby.all())
+        zaby = zaby1 + zaby2
+        
+        tiles_data = []
         for i in range(8):
-            args["tiles"].append([])
+            tiles_data.append([])
             for j in range(8):
-                args["tiles"][-1].append({
-                    "text" : "T",
-                    "zaby": [
-                        {
-                            "id" : i * 8 + j
-                        },
-                        # {
-                        #     "id" : i * 8 + j + 63
-                        # }
-                    ]
-                })
+                tile = tiles[i * 8 + j]
+                tiles_data[-1].append(
+                    {
+                        "number" : i * 8 + j,
+                        "image" : tile.type if tile.isFliped else tile.backgroundType,
+                        "zaby" : [],
+                    }
+                )
+                # zaby
+                for zaba in zaby:
+                    if zaba.tile.number == i * 8 + j:
+                        tiles_data[-1][-1]["zaby"].append(
+                            {
+                                "id": zaba.id,
+                                "image": 1 if zaba.isQueen else 0,
+                                "color": "blue" if zaba in list(game.player1.zaby.all()) else "pink"
+                            }
+                        )
+                
+        args["tiles"] = tiles_data
+
+
+        # for i in range(8):
+        #     args["tiles"].append([])
+        #     for j in range(8):
+        #         args["tiles"][-1].append({
+        #             "text" : "T",
+        #             "zaby": [
+        #                 {
+        #                     "id" : i * 8 + j
+        #                 },
+        #                 # {
+        #                 #     "id" : i * 8 + j + 63
+        #                 # }
+        #             ]
+        #         })
         return args
 
 def play_move(request, code):

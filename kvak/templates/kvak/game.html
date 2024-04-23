@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.3">   
+    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.4">   
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,10 +24,17 @@
         {% for tile_row in tiles %}
         <div class="row">
             {% for tile in tile_row %}
-                <div class="tile">
+                <div class="tile zaba" onclick='tile_clicked("{{tile.number}}")' id="zaba_{{tile.number}}">
+                    <div class="tile_image">
+                        <img src="{% static 'kvak/images/tile_type_' %}{{ tile.number }}.svg" alt="">
+
+                        <!-- {{ tile.image }} -->
+                    </div>
+                    
+
                     {% for zaba in tile.zaby %}
-                        <div class="zaba" onclick='tile_clicked("{{zaba.id}}")' id="zaba_{{zaba.id}}">
-                            {{ zaba.id }}
+                        <div class="{{zaba.color}} real_zaba" id="">
+                            {{ zaba.image }}
                         </div> 
                     {% endfor %}
                 </div>
@@ -64,7 +71,7 @@
     }
 
     function prvni_tah(id) {
-        document.getElementById("informations").innerHTML += " - První tah zadán - "
+        document.getElementById("informations").innerHTML += " - První tah zadán - " + id
         color_frog(id)
     }
 
