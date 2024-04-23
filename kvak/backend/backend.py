@@ -1,12 +1,16 @@
 from models import Tile,Player,Game,Žába,Board
 
-def next_state(tile1Num:int,tile2Num:int,gameid:int):
+def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     #tile from which we are moving
     start = get_tile_from_id(tile1Num)
     #tile where we move
     destiny = get_tile_from_id(tile2Num)
+
     #moving frog
-    frog = get_frog_from_tile(start)
+    frog1 = get_frog_from_id(frog1)
+    #frog to kill if -1 then nothing
+    frog2 = get_frog_from_id(frog2)
+
     #the gave, we are evaluating
     game = get_game_from_id(gameid)
     #player whos move it is
@@ -14,21 +18,17 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int):
     #frogs of the playing player
     frogs = player.zaby
 
-    if check_valid_move(start,destiny,frog,frogs):
-        #kill_frog_on_tile(tile)
-        #move(destiny,frog)
+    if check_valid_move(start,destiny,frog1,frogs):
+        move(destiny,frog1)
 
 
 
-
-def get_frog_from_tile(tile):
-    return Žába.objects.get(tile=tile)
 
 def get_tile_from_id(tileNum):
     return Tile.objects.get(number=tileNum)
 
 def get_game_from_id(gameid):
-    return Game.objects.get(id=gameid) #game might not have id 
+    return Game.objects.get(id=gameid) 
 
 def get_player_from_game(game):
     turn_count = game.moveCount
@@ -38,18 +38,40 @@ def get_player_from_game(game):
     else:
         return game.player2
 
+def get_frog_from_id(id)->Žába:
+    try:
+        return Žába.objects.get(id=id)
+    except: return None
 
-def check_valid_move(start,destiny,frog,frogs):
+def kill_frog_on_tile(frog):
+    #kills the frog
+    pass
+
+def move(tile,frog):
+    frog.tile = tile
+    frog.save()
+
+
+
+
+
+def check_valid_move(start:Tile,destiny:Tile,frogs:list[Žába],frog1:Žába,frog2:Žába):
+    if start==destiny:
+        return False
+    
+    if frog1.can_move:
+        return False
+    
     if not adjecent(start,destiny):
         return False
-    if occupied_by_teammate(destiny,frogs):
+    
+    if teammate_frog(frogs,frog2,destiny):
         return False
+    
     if queen_given_birth(start,frogs):
         return False
+    
     return True
-
-
-
 
 def adjecent(tile1,tile2):
     num1 = tile1.number
@@ -60,12 +82,10 @@ def adjecent(tile1,tile2):
     else: 
         return False
 
-def occupied_by_teammate(tile,frogs):
-    try:
-        teammate = Žába.objects.get(tile = tile)
-        if teammate in frogs:
-            return True
-    except: 
+def teammate_frog(frogs:list[Žába],frog:Žába,tile:Tile):
+    if frog in frogs and tile.type!="KLADA":
+        return True
+    else: 
         return False
 
 def queen_given_birth(tile,frogs):
