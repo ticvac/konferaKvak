@@ -4,7 +4,7 @@ from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 from .models import Game, Board, Tile, Player, Žába
 from .custom_enums import TileType, BackgroundType
-
+from .backend.backend import *
 import random
 
 
@@ -290,5 +290,8 @@ def play_move(request, code):
         tile2_id = int(request.POST["tile_id_2"])
         zaba1_choice = int(request.POST["zaba_1_choice"])
         zaba2_choice = int(request.POST["zaba_2_choice"])
+    next_state(tile1_id, tile2_id, code, zaba1_choice, zaba2_choice)
     
+    return HttpResponseRedirect(reverse("game", kwargs={"code": code}))
+
     return HttpResponse(str(tile1_id) + " - " + str(tile2_id) + " |--!--| " + str(zaba1_choice) + " ! " + str(zaba2_choice))

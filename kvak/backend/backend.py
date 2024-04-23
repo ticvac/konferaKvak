@@ -1,10 +1,12 @@
-from models import Tile,Player,Game,Žába,Board,StouplNaSamce
+
+from ..models import Tile,Player,Game,Žába,Board,StouplNaSamce
 
 def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
+    game = get_game_from_id(gameid)
     #tile from which we are moving
-    start = get_tile_from_id(tile1Num)
+    start = get_tile_from_id(tile1Num, game)
     #tile where we move
-    destiny = get_tile_from_id(tile2Num)
+    destiny = get_tile_from_id(tile2Num, game)
 
     #moving frog
     frog1 = get_frog_from_id(frog1)
@@ -12,23 +14,26 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     frog2 = get_frog_from_id(frog2)
 
     #the gave, we are evaluating
-    game = get_game_from_id(gameid)
+    
     #player whos move it is
     player = get_player_from_game(game)
     #frogs of the playing player
-    frogs = player.zaby
+    frogs = list(player.zaby.all())
 
-    if check_valid_move(start,destiny,frog1,frogs):
+    if check_valid_move(start,destiny, frogs, frog1, frog2):
         kill_frog_on_tile(destiny)
         move(destiny,frog1)
         evaluate_destiny(destiny,frog1,game,player)
+        game.moveCount += 1
+        game.save()
 
 
 
 
-def get_tile_from_id(tileNum):
+def get_tile_from_id(tileNum, game):
     try:
-        return Tile.objects.get(number=tileNum)
+        return game.board.tiles.get(number=tileNum)
+        # return Tile.objects.get(, number=tileNum)
     except:
         print("nemůžu najít tile")
         return "koule"
@@ -43,21 +48,25 @@ def get_game_from_id(gameid):
 def get_player_from_game(game):
     turn_count = game.moveCount
 
-    if turn_count%2==0:
+    if turn_count % 2==0:
         return game.player1
     else:
         return game.player2
 
 def get_frog_from_id(id)->Žába:
+    print(id)
     try:
         return Žába.objects.get(id=id)
     except:
         print("nemůžu najít žábu")
-        return "koule"
+        return None
 
 def kill_frog_on_tile(tile):
-    frog_to_kill = Žába.objects.get(tileId=tile.id)
-    frog_to_kill.delete()
+    try:
+        frog_to_kill = Žába.objects.get(tile_id=tile.id)
+        frog_to_kill.delete()
+    except:
+        pass
 
 def move(tile,frog):
     frog.tile = tile
