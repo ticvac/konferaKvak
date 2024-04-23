@@ -20,6 +20,7 @@ class Žába(models.Model):
     isQueen = models.BooleanField(default=False)
     tile = models.ForeignKey(Tile, related_name = "zaby", null=False, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, related_name="zaby", null=False, on_delete=models.CASCADE)
+    can_move = models.BooleanField(default=True)
 
 class Game(models.Model):
     firstOnMove = models.BooleanField(default=True)
