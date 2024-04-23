@@ -12,6 +12,7 @@
 </head>
 <body>
     <div class="informations" >
+        <div class="one-information"> - Na tahu hráč - </div>
         <div id="informations" class="one-information">
 
         </div>
@@ -20,20 +21,23 @@
         {% csrf_token %}
         <input type="hidden" name="tile_id_1" id="tile_id_1">
         <input type="hidden" name="tile_id_2" id="tile_id_2">
+
+        <input type="hidden" name="zaba_1_choice" id="zaba_1_choice" value="-1">
+        <input type="hidden" name="zaba_2_choice" id="zaba_2_choice" value="-1">
         
         {% for tile_row in tiles %}
         <div class="row">
             {% for tile in tile_row %}
                 <div class="tile zaba" onclick='tile_clicked("{{tile.number}}")' id="zaba_{{tile.number}}">
                     <div class="tile_image">
-                        <img src="{% static 'kvak/images/tile_type_' %}{{ tile.number }}.svg" alt="">
+                        <img src="{% static 'kvak/images/' %}{{ tile.image }}" alt="">
 
                         <!-- {{ tile.image }} -->
                     </div>
                     
 
                     {% for zaba in tile.zaby %}
-                        <div class="{{zaba.color}} real_zaba" id="">
+                        <div class="{{zaba.color}} real_zaba" id="" onclick="zaba_pressed('{{ zaba.id }}')">
                             {{ zaba.image }}
                         </div> 
                     {% endfor %}
@@ -77,5 +81,15 @@
 
     function color_frog(id) {
         document.getElementById("zaba_" + id).style.backgroundColor = "cyan"
+    }
+
+    function zaba_pressed(id) {
+        ele = document.getElementById("zaba_1_choice")
+        ele2 = document.getElementById("zaba_2_choice")
+        if (ele.value == -1) {
+            ele.value = id
+        } else if (ele2.value == -1) {
+            ele2.value = id
+        }
     }
 </script>

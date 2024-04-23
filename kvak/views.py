@@ -250,7 +250,7 @@ class GameView(TemplateView):
                 tiles_data[-1].append(
                     {
                         "number" : i * 8 + j,
-                        "image" : tile.type if tile.isFliped else tile.backgroundType,
+                        "image" : "tile_type_" + str(tile.type) + ".svg" if tile.isFliped else "bg_" + str(tile.backgroundType) + ".jpg",
                         "zaby" : [],
                     }
                 )
@@ -285,10 +285,10 @@ class GameView(TemplateView):
         return args
 
 def play_move(request, code):
-    tile1_id = -1
-    tile2_id = -1
     if request.method == "POST":
         tile1_id = int(request.POST["tile_id_1"])
         tile2_id = int(request.POST["tile_id_2"])
+        zaba1_choice = int(request.POST["zaba_1_choice"])
+        zaba2_choice = int(request.POST["zaba_2_choice"])
     
-    return HttpResponse(str(tile1_id) + " - " + str(tile2_id))
+    return HttpResponse(str(tile1_id) + " - " + str(tile2_id) + " |--!--| " + str(zaba1_choice) + " ! " + str(zaba2_choice))
