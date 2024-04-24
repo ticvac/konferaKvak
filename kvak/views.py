@@ -303,6 +303,7 @@ def play_move(request, code):
     return HttpResponse(str(tile1_id) + " - " + str(tile2_id) + " |--!--| " + str(zaba1_choice) + " ! " + str(zaba2_choice))
 
 def skip_komar(request, code, stunned_frog_id):
+    stunned_frog_id = int(stunned_frog_id)
     game = Game.objects.get(id=code)
     game.moveCount += 1
     game.save()
