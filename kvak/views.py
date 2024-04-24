@@ -308,7 +308,8 @@ def skip_komar(request, code, stunned_frog_id):
         # game.moveCount += 1
         # game.save()
         zaba = Žába.objects.get(id=stunned_frog_id)
-        zaba.stunned -= 1
+        if zaba.stunned > 0:
+            zaba.stunned -= 1
         zaba.save()
 
     return HttpResponseRedirect(reverse("game", kwargs={"code": code}))
