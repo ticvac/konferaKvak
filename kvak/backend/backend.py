@@ -23,6 +23,8 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     if check_valid_move(start,destiny, frogs, frog1, frog2):
         if destiny.type!=7:#klada
             kill_frog_on_tile(destiny)
+        else:
+            kill_frog_klada(destiny,frog1,frog2)
         move(destiny,frog1)
         
         evaluate_destiny(destiny,frog1,game,player,frogs)
@@ -30,6 +32,26 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
         if destiny.type not in [1,2]: #leknin a komar
             game.moveCount += 1
         game.save()
+
+
+
+def kill_frog_klada(tile,frog1,frog2):
+    frogs_on_klada = Žába.objects.filter(tile=tile)
+    if len(frogs_on_klada) == 0:
+        return True
+    if len(frogs_on_klada)==1:
+        if frogs_on_klada[0].isQueen:
+            frogs_on_klada[0].delete()
+            return True
+        else:
+            return True
+    else:
+        if frog1.isQueen:
+            for frog in frogs_on_klada:
+                if frog.player == frog1.player:
+                    return False
+
+
 
 
 
@@ -63,6 +85,8 @@ def get_frog_from_id(id)->Žába:
     except:
         #print("nemůžu najít žábu")
         return None
+
+
 
 def kill_frog_on_tile(tile):
     try:
@@ -164,7 +188,7 @@ def check_valid_move(start:Tile,destiny:Tile,frogs:list[Žába],frog1:Žába,fro
     if not adjecent(start,destiny):
         return False
     
-    if teammate_frog(frogs,frog2,destiny):
+    if teammate_frog(frogs,frog1,frog2,destiny):
         return False
     
     if queen_given_birth(frogs, frog1):
@@ -181,8 +205,25 @@ def adjecent(tile1,tile2):
     else: 
         return False
 
-def teammate_frog(frogs:list[Žába],frog:Žába,tile:Tile):
-    if frog in frogs and tile.type!="KLADA":
+def teammate_frog(frogs:list[Žába],frog1,frog2:Žába,tile:Tile):
+    if tile.type == 7:
+        if frog1.isQueen:
+            for frog in frogs:
+                if frog.tile == tile:
+                    return False
+            return True
+        else: 
+            frogs_on_klada = Žába.objects.filter(tile=tile)
+            if len(frogs_on_klada)==1:
+                if frog1.player==frogs_on_klada[0].player and frogs_on_klada[0].isQueen:
+                    return False
+                return True
+            if len(frogs_on_klada)==2:
+                if frog1.player==frog2.player:
+                    return False
+                return True
+
+    elif frog2 in frogs:
         return True
     else: 
         return False
