@@ -10,9 +10,12 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
 
     #moving frog
     frog1 = get_frog_from_id(frog1)
+    if frog1 == None:
+        return
     #frog to kill if -1 then nothing
     frog2 = get_frog_from_id(frog2)
-    print(frog1.stunned)
+
+    # print(frog1.stunned)
     #the gave, we are evaluating
     
     #player whos move it is
@@ -21,6 +24,7 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     frogs = list(player.zaby.all())
 
     if check_valid_move(start,destiny, frogs, frog1, frog2):
+        game.komar_frog = -1
         if destiny.type!=7:#klada
             kill_frog_on_tile(destiny)
         else:
