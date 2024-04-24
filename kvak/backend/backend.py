@@ -12,7 +12,7 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     frog1 = get_frog_from_id(frog1)
     #frog to kill if -1 then nothing
     frog2 = get_frog_from_id(frog2)
-
+    print(frog1.stunned)
     #the gave, we are evaluating
     
     #player whos move it is
@@ -21,12 +21,13 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     frogs = list(player.zaby.all())
 
     if check_valid_move(start,destiny, frogs, frog1, frog2):
-        move(destiny,frog1)
         if destiny.type!=7:#klada
             kill_frog_on_tile(destiny)
+        move(destiny,frog1)
+        
         evaluate_destiny(destiny,frog1,game,player,frogs)
         decrease_stunned(frogs)
-        if destiny.type not in [5,2]: #rakos a komar
+        if destiny.type not in [1,2]: #leknin a komar
             game.moveCount += 1
         game.save()
 
@@ -51,7 +52,7 @@ def get_game_from_id(gameid):
 def get_player_from_game(game):
     turn_count = game.moveCount
 
-    if turn_count % 2==0:
+    if turn_count % 2 == 0:
         return game.player1
     else:
         return game.player2
@@ -65,8 +66,9 @@ def get_frog_from_id(id)->Žába:
 
 def kill_frog_on_tile(tile):
     try:
-        frog_to_kill = Žába.objects.get(tile_id=tile.id)
-        frog_to_kill.delete()
+        frogs_to_kill = Žába.objects.filter(tile=tile)
+        for frog in frogs_to_kill:
+            frog.delete()
     except:
         pass
 
@@ -84,12 +86,12 @@ def evaluate_destiny(tile:Tile,frog:Žába,game:Game,player:Player,frogs:list[Ž
     if tile.type == 3:#bahno
         on_bahno(frog)
     if tile.type == 4:#stika
-        on_stika(frog)
+        on_stika(tile)
     if tile.type == 5:#rakos
         return True
     if tile.type == 7:
         on_klada(tile)
-    if tile.type in [60,61,62,63,64,65]: #mozna samci maji 7*
+    if tile.type in [60,61,62,63,64,65]: #mozna samci maji *
         on_samec(player,game,tile,frog)
 
 def on_leknin(frog,frogs):
@@ -100,7 +102,7 @@ def on_leknin(frog,frogs):
         zaba.save()
 
 def on_komar(frog):
-    frog.stunned=2
+    frog.stunned=1
     frog.save()
 
 def on_bahno(frog):
@@ -114,18 +116,16 @@ def on_stika(tile):
 def on_klada(tile:Tile)->bool:
     #povolit jen když tam je max jedna žába
     try:
-        frogs = Žába.objects.get(tileId=tile.id)
+        frogs = Žába.objects.filter(tile=tile)
         if len(frogs)>1:
             return False
+        if len(frogs) == 1:
+            if frogs[0].isQueen == True:
+                return False
+            else:
+                return True
     except:
         return True
-
-    #nepovolit když tam je královna
-    try:
-        Žába.objects.get(isQueen=True,tileId=tile.id)
-        return False
-    except:
-        pass
 
 
 def on_samec(player:Player,game:Game,tile:Tile,frog:Žába):
@@ -135,8 +135,15 @@ def on_samec(player:Player,game:Game,tile:Tile,frog:Žába):
             print("balls")
             return False
         except:
-            Žába.objects.create(isQueen=False,tileId=tile.id)
-            Žába.save()
+            zaba = Žába.objects.create(isQueen=False, tile=tile, player=player)
+            zaba.save()
+            # TODO create stoupl na samce
+            sns = StouplNaSamce.objects.create(
+                playerId = player.id,
+                gameId = game.id,
+                color = tile.type,
+            )
+            sns.save()
     return
         
 
@@ -160,7 +167,7 @@ def check_valid_move(start:Tile,destiny:Tile,frogs:list[Žába],frog1:Žába,fro
     if teammate_frog(frogs,frog2,destiny):
         return False
     
-    if queen_given_birth(start,frogs):
+    if queen_given_birth(frogs, frog1):
         return False
     
     return True
@@ -180,12 +187,15 @@ def teammate_frog(frogs:list[Žába],frog:Žába,tile:Tile):
     else: 
         return False
 
-def queen_given_birth(tile,frogs):
+def queen_given_birth(frogs, frog1):
     for frog in frogs:
         for zaba in frogs:
-            if frog.tile == zaba.tile and zaba != frog and frog.tile == tile:
+            if frog.tile == zaba.tile and zaba != frog:
                 if frog.isQueen or zaba.isQueen:
-                    return True
+                    if frog == frog1 or zaba == frog1:
+                        return False
+                    else:
+                        return True
     return False
 
 def decrease_stunned(frogs):

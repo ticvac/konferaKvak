@@ -239,13 +239,15 @@ class GameView(TemplateView):
         args = {}
         args["tiles"] = []
         args["game_id"] = code
+        
         # args["premoved_frog"] = 9
         game = Game.objects.get(id=code)
         tiles = game.board.tiles.all().order_by("number")
         zaby1 = list(game.player1.zaby.all())
         zaby2 = list(game.player2.zaby.all())
         zaby = zaby1 + zaby2
-        
+        args["hrac_na_tahu"] = game.moveCount % 2 + 1
+
         tiles_data = []
         for i in range(8):
             tiles_data.append([])
