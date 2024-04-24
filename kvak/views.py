@@ -305,8 +305,8 @@ def play_move(request, code):
 def skip_komar(request, code, stunned_frog_id):
     if stunned_frog_id != -1:
         game = Game.objects.get(id=code)
-        # game.moveCount += 1
-        # game.save()
+        game.moveCount += 1
+        game.save()
         zaba = Žába.objects.get(id=stunned_frog_id)
         if zaba.stunned > 0:
             zaba.stunned -= 1
