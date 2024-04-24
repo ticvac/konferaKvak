@@ -42,15 +42,17 @@ def kill_frog_klada(tile,frog1,frog2):
     if len(frogs_on_klada)==1:
         if frogs_on_klada[0].isQueen:
             frogs_on_klada[0].delete()
-            return True
-        else:
-            return True
-    else:
+
         if frog1.isQueen:
             for frog in frogs_on_klada:
-                if frog.player == frog1.player:
-                    return False
-
+                frog.delete()
+    if len(frogs_on_klada) == 2:
+        if frog1.isQueen:
+            for frog in frogs_on_klada:
+                frog.delete()
+        else:
+            if frog1.player != frog2.player:
+                frog2.delete()
 
 
 
@@ -130,7 +132,7 @@ def on_komar(frog):
     frog.save()
 
 def on_bahno(frog):
-    frog.stunned=2
+    frog.stunned=1
     frog.save()
     return
 
@@ -210,18 +212,18 @@ def teammate_frog(frogs:list[Žába],frog1,frog2:Žába,tile:Tile):
         if frog1.isQueen:
             for frog in frogs:
                 if frog.tile == tile:
-                    return False
-            return True
+                    return True
+            return False
         else: 
             frogs_on_klada = Žába.objects.filter(tile=tile)
             if len(frogs_on_klada)==1:
                 if frog1.player==frogs_on_klada[0].player and frogs_on_klada[0].isQueen:
-                    return False
-                return True
+                    return True
+                return False
             if len(frogs_on_klada)==2:
                 if frog1.player==frog2.player:
-                    return False
-                return True
+                    return True
+                return False
 
     elif frog2 in frogs:
         return True
