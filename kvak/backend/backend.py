@@ -70,6 +70,8 @@ def kill_frog_on_tile(tile):
 
 def move(tile,frog):
     frog.tile = tile
+    tile.isFliped = True
+    tile.save()
     frog.save()
 
 def evaluate_destiny(tile:Tile,frog:Žába,game:Game,player:Player):
