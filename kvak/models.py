@@ -32,6 +32,8 @@ class Game(models.Model):
 
     isOver = models.BooleanField(default=False)
 
+    komar_frog = models.IntegerField(default=-1)
+
 
 class StouplNaSamce(models.Model):
     playerId = models.IntegerField()

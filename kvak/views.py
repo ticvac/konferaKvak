@@ -247,7 +247,7 @@ class GameView(TemplateView):
         zaby2 = list(game.player2.zaby.all())
         zaby = zaby1 + zaby2
         args["hrac_na_tahu"] = game.moveCount % 2 + 1
-
+        args["komar_frog"] = game.komar_frog
         tiles_data = []
         for i in range(8):
             tiles_data.append([])
@@ -301,3 +301,15 @@ def play_move(request, code):
     return HttpResponseRedirect(reverse("game", kwargs={"code": code}))
 
     return HttpResponse(str(tile1_id) + " - " + str(tile2_id) + " |--!--| " + str(zaba1_choice) + " ! " + str(zaba2_choice))
+
+def skip_komar(request, code, stunned_frog_id):
+    if stunned_frog_id != -1:
+        game = Game.objects.get(id=code)
+        # game.moveCount += 1
+        # game.save()
+        zaba = Žába.objects.get(id=stunned_frog_id)
+        zaba.stunned -= 1
+        zaba.save()
+
+    return HttpResponseRedirect(reverse("game", kwargs={"code": code}))
+

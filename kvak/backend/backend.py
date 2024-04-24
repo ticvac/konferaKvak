@@ -108,7 +108,7 @@ def evaluate_destiny(tile:Tile,frog:Žába,game:Game,player:Player,frogs:list[Ž
     if tile.type == 1:#leknin
         on_leknin(frog,frogs)
     if tile.type == 2:#komar
-        on_komar(frog)
+        on_komar(frog, game)
     if tile.type == 3:#bahno
         on_bahno(frog)
     if tile.type == 4:#stika
@@ -127,7 +127,8 @@ def on_leknin(frog,frogs):
         zaba.stunned =2
         zaba.save()
 
-def on_komar(frog):
+def on_komar(frog, game):
+    game.komar_frog = frog.id
     frog.stunned=1
     frog.save()
 
