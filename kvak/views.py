@@ -220,6 +220,10 @@ def init(request):
         player= player2
     )
     zaba.save()
+    # for i in [0, 1, 8, 55, 63, 62]:
+    #     tile = game.board.tiles.get(number=i)
+    #     tile.isFliped = True
+    #     tile.save()
 
     game.save()
     id = game.id
