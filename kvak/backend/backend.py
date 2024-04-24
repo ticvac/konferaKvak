@@ -21,10 +21,13 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
     frogs = list(player.zaby.all())
 
     if check_valid_move(start,destiny, frogs, frog1, frog2):
-        kill_frog_on_tile(destiny)
         move(destiny,frog1)
-        evaluate_destiny(destiny,frog1,game,player)
-        game.moveCount += 1
+        if destiny.type!=7:#klada
+            kill_frog_on_tile(destiny)
+        evaluate_destiny(destiny,frog1,game,player,frogs)
+        decrease_stunned(frogs)
+        if destiny.type not in [5,2]: #rakos a komar
+            game.moveCount += 1
         game.save()
 
 
@@ -54,11 +57,10 @@ def get_player_from_game(game):
         return game.player2
 
 def get_frog_from_id(id)->Žába:
-    print(id)
     try:
         return Žába.objects.get(id=id)
     except:
-        print("nemůžu najít žábu")
+        #print("nemůžu najít žábu")
         return None
 
 def kill_frog_on_tile(tile):
@@ -74,34 +76,35 @@ def move(tile,frog):
     tile.save()
     frog.save()
 
-def evaluate_destiny(tile:Tile,frog:Žába,game:Game,player:Player):
-    if tile.type == 1:
-        on_leknin(frog)
-    if tile.type == 2:
+def evaluate_destiny(tile:Tile,frog:Žába,game:Game,player:Player,frogs:list[Žába]):
+    if tile.type == 1:#leknin
+        on_leknin(frog,frogs)
+    if tile.type == 2:#komar
         on_komar(frog)
-    if tile.type == 3:
+    if tile.type == 3:#bahno
         on_bahno(frog)
-    if tile.type == 4:
+    if tile.type == 4:#stika
         on_stika(frog)
-    if tile.type == 5:
+    if tile.type == 5:#rakos
         return True
-    if tile.type == 6:#mozna klada ma sedm
+    if tile.type == 7:
         on_klada(tile)
-    if tile.type in [61,62,63,64,65]: #mozna samci maji 7*
+    if tile.type in [60,61,62,63,64,65]: #mozna samci maji 7*
         on_samec(player,game,tile,frog)
 
-def on_leknin(frog):
-    #nepřičti kolo
-    #znovu dej hráči tah a forci ho pohnout se stejnou žábou jako předtím. (ostatním žábám dej can_move=Fals  možná)
-    ...
+def on_leknin(frog,frogs):
+    for zaba in frogs:
+        if zaba==frog:
+            continue
+        zaba.stunned =2
+        zaba.save()
 
 def on_komar(frog):
-    #nepřičti kolo
-    #dej hráči tah, ale žába, kterou se předtím pohnul má can_move=False
-    ...
+    frog.stunned=2
+    frog.save()
 
 def on_bahno(frog):
-    frog.can_move=False
+    frog.stunned=2
     frog.save()
     return
 
@@ -129,6 +132,7 @@ def on_samec(player:Player,game:Game,tile:Tile,frog:Žába):
     if frog.isQueen:
         try:
             StouplNaSamce.objects.get(playerId=player.id,gameId=game.id,color=tile.type)
+            print("balls")
             return False
         except:
             Žába.objects.create(isQueen=False,tileId=tile.id)
@@ -139,12 +143,15 @@ def on_samec(player:Player,game:Game,tile:Tile,frog:Žába):
 
 def check_valid_move(start:Tile,destiny:Tile,frogs:list[Žába],frog1:Žába,frog2:Žába):
     if start==destiny:
+        print("nemůžeš z jednoho políčka na to samé")
         return False
     
-    if not frog1.can_move:
+    if frog1.stunned>0:
+        print("jsi v bahně co děláš")
         return False
     
     if frog1 not in frogs:
+        print("není tvůj tah kámo")
         return False
     
     if not adjecent(start,destiny):
@@ -180,3 +187,9 @@ def queen_given_birth(tile,frogs):
                 if frog.isQueen or zaba.isQueen:
                     return True
     return False
+
+def decrease_stunned(frogs):
+    for frog in frogs:
+        if frog.stunned >0:
+            frog.stunned -= 1
+            frog.save()
