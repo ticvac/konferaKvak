@@ -273,21 +273,16 @@ class GameView(TemplateView):
                 
         args["tiles"] = tiles_data
 
-
-        # for i in range(8):
-        #     args["tiles"].append([])
-        #     for j in range(8):
-        #         args["tiles"][-1].append({
-        #             "text" : "T",
-        #             "zaby": [
-        #                 {
-        #                     "id" : i * 8 + j
-        #                 },
-        #                 # {
-        #                 #     "id" : i * 8 + j + 63
-        #                 # }
-        #             ]
-        #         })
+        hrac1maKralovnu = False
+        for zaba in game.player1.zaby.all():
+            if zaba.isQueen:
+                hrac1maKralovnu = True
+        hrac2maKralovnu = False
+        for zaba in game.player2.zaby.all():
+            if zaba.isQueen:
+                hrac2maKralovnu = True
+        if not hrac2maKralovnu or not hrac1maKralovnu:
+            args["cislo_hrace_co_vyhral"] = 1 if hrac1maKralovnu and not hrac2maKralovnu else 2
         return args
 
 def play_move(request, code):

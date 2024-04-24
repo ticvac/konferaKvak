@@ -46,10 +46,12 @@
         </div>
         {% endfor %}
     </form>
-
+    {% if cislo_hrace_co_vyhral %}
     <div class="game_over">
-
+        <h1>GAME OVER</h1>
+        <div>vyhrál hráč {{ cislo_hrace_co_vyhral }}</div>
     </div>
+    {% endif %}
 </body>
 </html>
 
