@@ -14,6 +14,11 @@ def next_state(tile1Num:int,tile2Num:int,gameid:int,frog1:int,frog2:int):
         return
     #frog to kill if -1 then nothing
     frog2 = get_frog_from_id(frog2)
+    if frog2 == None:
+        try:
+            frog2 = Žába.objects.get(tile=destiny)
+        except:
+            ...
 
     # print(frog1.stunned)
     #the gave, we are evaluating
