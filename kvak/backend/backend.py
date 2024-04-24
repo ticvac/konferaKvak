@@ -207,7 +207,7 @@ def adjecent(tile1,tile2):
     num1 = tile1.number
     num2 = tile2.number
 
-    if abs(num1-num2) in [1,8]:
+    if abs(num1-num2) in [1,8,7,9]:
         return True
     else: 
         return False
