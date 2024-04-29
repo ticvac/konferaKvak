@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'kvak/game.css' %}?v=1.6">   
+    <link rel="stylesheet" href="{% static 'kvak/game2.css' %}?v=1.7">   
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,9 +37,9 @@
                     
 
                     {% for zaba in tile.zaby %}
-                        <div class="supreme_zaba {{zaba.color}} real_zaba" id="" onclick="zaba_pressed('{{ zaba.id }}')">
-                            <img src="{% static 'kvak/images/' %}{{ zaba.image }}" alt="">
-                        </div> 
+                    <div class="supreme_zaba {{zaba.color}} real_zaba" id="" onclick="zaba_pressed('{{ zaba.id }}')">
+                        <img src="{% static 'kvak/images/' %}{{ zaba.image }}" alt="">
+                    </div> 
                     {% endfor %}
                 </div>
             {% endfor %}
